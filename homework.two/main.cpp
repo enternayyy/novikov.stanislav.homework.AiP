@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <limits>
 #include <new>
@@ -57,7 +58,7 @@ namespace novikov
 
     int** allocate_result_matrix(size_t n1, size_t m1, size_t n2, size_t m2)
     {
-        size_t n = std::max(n1, n2);
+        size_t n = (n1 > n2) ? n1 : n2;
         safe_multiply(n, sizeof(int*));
         int** result = new int*[n]();
         try
@@ -112,7 +113,7 @@ namespace novikov
 
     void print_result(const int* const* matrix, size_t n1, size_t m1, size_t n2, size_t m2)
     {
-        size_t n = std::max(n1, n2);
+        size_t n = (n1 > n2) ? n1 : n2;
         for (size_t i = 0; i < n; ++i)
         {
             size_t length = 0;
@@ -147,16 +148,24 @@ int main()
     int** result = nullptr;
     try
     {
+        long long input_rows = 0, input_cols = 0;
+
         std::cout << "Enter the number of rows and columns for the first matrix: ";
-        if (!(std::cin >> n1 >> m1) || n1 <= 0 ||  m1 <= 0)
+        if (!(std::cin >> input_rows >> input_cols) || input_rows <= 0 || input_cols <= 0)
         {
             throw std::invalid_argument("Invalid input");
         }
+        n1 = static_cast<size_t>(input_rows);
+        m1 = static_cast<size_t>(input_cols);
+
         std::cout << "Enter the number of rows and columns for the second matrix: ";
-        if (!(std::cin >> n2 >> m2) || n2 <= 0 || m2 <= 0)
+        if (!(std::cin >> input_rows >> input_cols) || input_rows <= 0 || input_cols <= 0)
         {
             throw std::invalid_argument("Invalid input");
         }
+        n2 = static_cast<size_t>(input_rows);
+        m2 = static_cast<size_t>(input_cols);
+
         lhs = novikov::allocate_matrix(n1, m1);
         rhs = novikov::allocate_matrix(n2, m2);
         std::cout << "Enter the elements of the first matrix: ";
@@ -205,8 +214,13 @@ int main()
         std::cerr << "Error: " << e.what() << std::endl;
         code = unknown_error_code;
     }
+    catch (...)
+    {
+        std::cerr << "Error: unknown exception" << std::endl;
+        code = unknown_error_code;
+    }
     novikov::delete_matrix(lhs, n1);
     novikov::delete_matrix(rhs, n2);
-    novikov::delete_matrix(result, std::max(n1, n2));
+    novikov::delete_matrix(result, (n1 > n2) ? n1 : n2);
     return code;
 }
