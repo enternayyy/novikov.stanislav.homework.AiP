@@ -148,12 +148,12 @@ int main()
     try
     {
         std::cout << "Enter the number of rows and columns for the first matrix: ";
-        if (!(std::cin >> n1 >> m1) || n1 == 0 ||  m1 == 0)
+        if (!(std::cin >> n1 >> m1) || n1 <= 0 ||  m1 <= 0)
         {
             throw std::invalid_argument("Invalid input");
         }
         std::cout << "Enter the number of rows and columns for the second matrix: ";
-        if (!(std::cin >> n2 >> m2) || n2 == 0 || m2 == 0)
+        if (!(std::cin >> n2 >> m2) || n2 <= 0 || m2 <= 0)
         {
             throw std::invalid_argument("Invalid input");
         }
